@@ -1,0 +1,166 @@
+package com.trainingmug.ecommerce.service.impl;
+
+import com.trainingmug.ecommerce.exception.ProductExistsException;
+import com.trainingmug.ecommerce.exception.ProductNotFoundException;
+import com.trainingmug.ecommerce.model.Product;
+import com.trainingmug.ecommerce.repository.ProductRepository;
+import com.trainingmug.ecommerce.service.ProductService;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+@Service
+public class ProductServiceImpl implements ProductService {
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public Product save(Product product) {
+        Optional<Product> existingProduct = productRepository.findBYId(product.getId());
+        if(existingProduct.isPresent()){
+            throw new RuntimeException("product already exists");
+        }
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product update(Product product) throws ProductExistsException {
+        return productRepository.update(product);
+    }
+
+    @Override
+    public void delete(int id) throws ProductNotFoundException {
+        productRepository.delete(id);
+    }
+    @Override
+    public List<Product> getProductsByAvailability(boolean isAvailable) {
+        return productRepository.findAll().stream().filter(p->p.isAvailable()==isAvailable).toList();
+    }
+
+    @Override
+    public List<Product> getProductByCategory(String category) {
+        return productRepository.findAll().stream().filter(p-> p.getCategory().equals(category)).toList();
+    }
+
+    @Override
+    public Product getProductById(int id) throws ProductNotFoundException {
+        return productRepository.findBYId(id).orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        return productRepository.findAll().stream().map(Product::getCategory).distinct().toList();
+    }
+
+    @Override
+    public List<Product> getProductsWithPriceGreaterThan(int price) {
+        return productRepository.findAll().stream().filter(p->p.getMaxRetailPrice()>price).toList();
+
+    }
+
+    @Override
+    public List<String> getNamesOfAllProducts() {
+        return productRepository.findAll().stream().map(Product::getName).toList();
+    }
+
+    @Override
+    public int getCountOfProductsAvailable() {
+        return (int) productRepository.findAll().stream().filter(Product::isAvailable).count();
+    }
+
+    @Override
+    public boolean anyProductFromGivenCompany(String company) {
+        return productRepository.findAll().stream().anyMatch(p->p.getCompany().equals(company));
+    }
+
+    @Override
+    public boolean areALlProductsAvailable() {
+        return productRepository.findAll().stream().allMatch(Product::isAvailable);
+    }
+
+    @Override
+    public Optional<Product> getFirstProduct() {
+        return productRepository.findAll().stream().findFirst();
+    }
+
+    @Override
+    public List<Product> getTopNMostExpensiveProducts(int N) {
+        return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getMaxRetailPrice).reversed()).limit(N).toList();
+    }
+
+    @Override
+    public List<Product> getProductsByPriceInAscending() {
+        return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getMaxRetailPrice)).toList();
+    }
+
+    @Override
+    public List<Product> getProductsByNAmeInDescending() {
+        return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getName).reversed()).toList();
+    }
+
+    @Override
+    public Double sumOfAllProductPrices() {
+        return productRepository.findAll().stream().mapToDouble(Product::getMaxRetailPrice).sum();
+    }
+
+    @Override
+    public int priceAfterApplyingDiscounts() {
+        return productRepository.findAll().stream().mapToInt(p->p.getMaxRetailPrice()-((p.getMaxRetailPrice()*p.getDiscountPercentage())/100)).sum();
+    }
+
+    @Override
+    public List<Product> getProductsManufacturedAfterYear(int year) {
+        return productRepository.findAll().stream().filter(p->p.getManufacturedYear()>year).toList();
+    }
+
+    @Override
+    public List<Product> getAvailableAndPriceGreaterThan(int price) {
+        return productRepository.findAll().stream().filter(p->p.isAvailable() && p.getMaxRetailPrice() > price).toList();
+    }
+
+    @Override
+    public Map<String, Long> countOfProductsInCategory() {
+        return productRepository.findAll().stream().collect(Collectors.groupingBy(Product::getCategory,Collectors.counting()));
+    }
+
+    @Override
+    public Map<String, List<Product>> groupProductsByCategory() {
+        return productRepository.findAll().stream().collect(Collectors.groupingBy(Product::getCategory));
+    }
+
+    @Override
+    public Map<String, List<Product>> groupProductsByCompany() {
+        return productRepository.findAll().stream().collect(Collectors.groupingBy(Product::getCompany));
+    }
+
+    @Override
+    public Map<Boolean, List<Product>> partitionIntoAvailableAndUnavailable() {
+        return productRepository.findAll().stream().collect(Collectors.partitioningBy(Product::isAvailable));
+    }
+
+    @Override
+    public Optional<Product> getMostExpensiveProduct() {
+        return productRepository.findAll().stream().max(Comparator.comparing(Product::getMaxRetailPrice));
+    }
+
+    @Override
+    public Optional<Product> getCheapestProduct() {
+        return productRepository.findAll().stream().min(Comparator.comparing(Product::getMaxRetailPrice));
+    }
+
+    @Override
+    public Map<Integer, Product> mapOfProductIdToProduct() {
+        return productRepository.findAll().stream().collect(Collectors.toMap(Product::getId,p->p));
+    }
+
+    @Override
+    public Map<String, Double> averagePriceOfProductsPerCategory() {
+        return productRepository.findAll().stream().collect(Collectors.groupingBy(Product::getCategory,Collectors.averagingDouble(Product::getMaxRetailPrice)));
+    }
+}
