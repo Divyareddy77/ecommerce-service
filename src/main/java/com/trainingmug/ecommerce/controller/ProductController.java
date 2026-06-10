@@ -1,11 +1,6 @@
 package com.trainingmug.ecommerce.controller;
 
-import com.trainingmug.ecommerce.exception.CustomerExistsException;
-import com.trainingmug.ecommerce.exception.CustomerNotFoundException;
-import com.trainingmug.ecommerce.exception.ProductNotFoundException;
-import com.trainingmug.ecommerce.model.Customer;
-import com.trainingmug.ecommerce.model.Product;
-import com.trainingmug.ecommerce.service.CustomerService;
+import com.trainingmug.ecommerce.entity.Product;
 import com.trainingmug.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,46 +19,30 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Product product){
-        try{
+
             return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
-        }catch (ProductNotFoundException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable int id){
-        try{
+
             return ResponseEntity.ok(productService.getProductById(id));
-        }catch (ProductNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable int id,@RequestBody Product product){
-        try{
+
             Product updatedProduct = productService.update(product);
             return ResponseEntity.ok(updatedProduct);
-        }catch (ProductNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+
     }
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        try {
-            productService.delete(id);
+
+            productService.deleteById(id);
             return ResponseEntity.noContent().build();
-        } catch(ProductNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-        }
+
     }
     @GetMapping("/available")
     public ResponseEntity<List<Product>> getAvailableProducts(){

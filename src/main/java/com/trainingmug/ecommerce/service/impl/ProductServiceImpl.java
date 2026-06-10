@@ -2,7 +2,7 @@ package com.trainingmug.ecommerce.service.impl;
 
 import com.trainingmug.ecommerce.exception.ProductExistsException;
 import com.trainingmug.ecommerce.exception.ProductNotFoundException;
-import com.trainingmug.ecommerce.model.Product;
+import com.trainingmug.ecommerce.entity.Product;
 import com.trainingmug.ecommerce.repository.ProductRepository;
 import com.trainingmug.ecommerce.service.ProductService;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product save(Product product) {
-        Optional<Product> existingProduct = productRepository.findBYId(product.getId());
+        Optional<Product> existingProduct = productRepository.findById(product.getId());
         if(existingProduct.isPresent()){
             throw new RuntimeException("product already exists");
         }
@@ -31,12 +31,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update(Product product) throws ProductExistsException {
-        return productRepository.update(product);
+        return productRepository.save(product);
     }
 
     @Override
-    public void delete(int id) throws ProductNotFoundException {
-        productRepository.delete(id);
+    public void deleteById(int id) throws ProductNotFoundException {
+        productRepository.deleteById(id);
     }
     @Override
     public List<Product> getProductsByAvailability(boolean isAvailable) {
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(int id) throws ProductNotFoundException {
-        return productRepository.findBYId(id).orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
+        return productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
     }
 
     @Override

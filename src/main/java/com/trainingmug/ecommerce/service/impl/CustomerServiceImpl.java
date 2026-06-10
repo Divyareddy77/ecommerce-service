@@ -3,7 +3,7 @@ package com.trainingmug.ecommerce.service.impl;
 import com.trainingmug.ecommerce.enums.Status;
 import com.trainingmug.ecommerce.exception.CustomerExistsException;
 import com.trainingmug.ecommerce.exception.CustomerNotFoundException;
-import com.trainingmug.ecommerce.model.Customer;
+import com.trainingmug.ecommerce.entity.Customer;
 import com.trainingmug.ecommerce.repository.CustomerRepository;
 import com.trainingmug.ecommerce.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer update(Customer customer) throws CustomerNotFoundException {
         customerRepository.findById(customer.getId()).orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + customer.getId()));
-        return customerRepository.update(customer);
+        return customerRepository.save(customer);
     }
 
     @Override

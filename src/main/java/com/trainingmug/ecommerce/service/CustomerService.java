@@ -2,7 +2,7 @@ package com.trainingmug.ecommerce.service;
 
 import com.trainingmug.ecommerce.exception.CustomerExistsException;
 import com.trainingmug.ecommerce.exception.CustomerNotFoundException;
-import com.trainingmug.ecommerce.model.Customer;
+import com.trainingmug.ecommerce.entity.Customer;
 
 import java.util.List;
 
