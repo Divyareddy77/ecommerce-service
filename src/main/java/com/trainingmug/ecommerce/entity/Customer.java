@@ -3,13 +3,19 @@ package com.trainingmug.ecommerce.entity;
 import com.trainingmug.ecommerce.enums.Gender;
 import com.trainingmug.ecommerce.enums.Status;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "customers")
 
 public class Customer {
