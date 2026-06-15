@@ -1,10 +1,15 @@
 package com.trainingmug.ecommerce.service.impl;
 
+import com.trainingmug.ecommerce.dto.request.ProductRequestDto;
+import com.trainingmug.ecommerce.dto.request.UpdateProductRequestDto;
+import com.trainingmug.ecommerce.dto.response.ProductResponseDto;
 import com.trainingmug.ecommerce.exception.ProductExistsException;
 import com.trainingmug.ecommerce.exception.ProductNotFoundException;
 import com.trainingmug.ecommerce.entity.Product;
 import com.trainingmug.ecommerce.repository.ProductRepository;
 import com.trainingmug.ecommerce.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -13,25 +18,35 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ModelMapper modelMapper;
 
     @Override
-    public Product save(Product product) {
-        Optional<Product> existingProduct = productRepository.findById(product.getId());
-        if(existingProduct.isPresent()){
-            throw new RuntimeException("product already exists");
+    public ProductResponseDto save(ProductRequestDto productRequestDto) throws ProductExistsException {
+        boolean exists = productRepository.findAll().stream().anyMatch(p ->p.getId()==productRequestDto.getId());
+        if(exists){
+            throw new ProductExistsException("product already exists");
         }
-        return productRepository.save(product);
+        Product product = modelMapper.map(productRequestDto,Product.class);
+        Product savedProduct = productRepository.save(product);
+        return modelMapper.map(savedProduct,ProductResponseDto.class);
     }
 
     @Override
-    public Product update(Product product) throws ProductExistsException {
-        return productRepository.save(product);
+    public ProductResponseDto update(UpdateProductRequestDto updateProductRequestDto) throws ProductExistsException {
+        Product product = productRepository.findById(updateProductRequestDto.getId()).orElseThrow(() -> new ProductNotFoundException("Product not found with id "+updateProductRequestDto.getId()));
+        product.setName(updateProductRequestDto.getName());
+        product.setAvailable(updateProductRequestDto.isAvailable());
+        product.setCategory(updateProductRequestDto.getCategory());
+        product.setCompany(updateProductRequestDto.getCompany());
+        product.setMaxRetailPrice(updateProductRequestDto.getMaxRetailPrice());
+        product.setDiscountPercentage(updateProductRequestDto.getDiscountPercentage());
+        product.setManufacturedYear(updateProductRequestDto.getManufacturedYear());
+        product.setRating(updateProductRequestDto.getRating());
+        Product updatedProduct = productRepository.save(product);
+        return modelMapper.map(updatedProduct,ProductResponseDto.class);
     }
 
     @Override
@@ -49,8 +64,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(int id) throws ProductNotFoundException {
-        return productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
+    public ProductResponseDto getProductById(int id) throws ProductNotFoundException {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found with id "+id));
+        return modelMapper.map(product,ProductResponseDto.class);
     }
 
     @Override

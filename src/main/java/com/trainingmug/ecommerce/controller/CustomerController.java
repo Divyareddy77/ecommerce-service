@@ -77,10 +77,10 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.login(loginRequestDto));
     }
     @GetMapping("/created-between/{start}/{end}")
-    public ResponseEntity<List<CustomerResponseDto>> getCustomersCreatedBetween(@PathVariable LocalDateTime start,@RequestParam LocalDateTime end){
+    public ResponseEntity<List<CustomerResponseDto>> getCustomersCreatedBetween(@PathVariable LocalDateTime start,@PathVariable LocalDateTime end){
         return ResponseEntity.ok(customerService.getsCustomersCreatedBetween(start,end));
     }
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<List<CustomerResponseDto>> getCustomersNameLike(@PathVariable String name){
         return ResponseEntity.ok(customerService.getCustomersNameLike(name));
     }

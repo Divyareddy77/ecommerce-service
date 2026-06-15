@@ -1,5 +1,8 @@
 package com.trainingmug.ecommerce.controller;
 
+import com.trainingmug.ecommerce.dto.request.ProductRequestDto;
+import com.trainingmug.ecommerce.dto.request.UpdateProductRequestDto;
+import com.trainingmug.ecommerce.dto.response.ProductResponseDto;
 import com.trainingmug.ecommerce.entity.Product;
 import com.trainingmug.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +21,27 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Product product){
+    public ResponseEntity<ProductResponseDto> save(@RequestBody ProductRequestDto productRequestDto){
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
+            return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productRequestDto));
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable int id){
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id){
 
             return ResponseEntity.ok(productService.getProductById(id));
 
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id,@RequestBody Product product){
+    public ResponseEntity<ProductResponseDto> update(@PathVariable int id, @RequestBody UpdateProductRequestDto updateProductRequestDto){
 
-            Product updatedProduct = productService.update(product);
+            ProductResponseDto updatedProduct = productService.update(updateProductRequestDto);
             return ResponseEntity.ok(updatedProduct);
 
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable int id){
+    public ResponseEntity<Void> delete(@PathVariable int id){
 
             productService.deleteById(id);
             return ResponseEntity.noContent().build();

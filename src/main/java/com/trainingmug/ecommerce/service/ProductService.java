@@ -1,5 +1,8 @@
 package com.trainingmug.ecommerce.service;
 
+import com.trainingmug.ecommerce.dto.request.ProductRequestDto;
+import com.trainingmug.ecommerce.dto.request.UpdateProductRequestDto;
+import com.trainingmug.ecommerce.dto.response.ProductResponseDto;
 import com.trainingmug.ecommerce.exception.ProductExistsException;
 import com.trainingmug.ecommerce.exception.ProductNotFoundException;
 import com.trainingmug.ecommerce.entity.Product;
@@ -9,12 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface ProductService {
-    Product save(Product product) throws ProductNotFoundException;
-    Product update(Product product) throws ProductExistsException;
-    public void deleteById(int id) throws ProductNotFoundException;
+    ProductResponseDto save(ProductRequestDto productRequestDto) throws ProductNotFoundException;
+    ProductResponseDto update(UpdateProductRequestDto updateProductRequestDto) throws ProductExistsException;
+    void deleteById(int id) throws ProductNotFoundException;
     List<Product> getProductsByAvailability(boolean isAvailable);
     List<Product> getProductByCategory(String category);
-    Product getProductById(int id) throws ProductNotFoundException;
+    ProductResponseDto getProductById(int id) throws ProductNotFoundException;
     List<String> getAllCategories();
     List<Product> getProductsWithPriceGreaterThan(int price);
     List<String> getNamesOfAllProducts();
