@@ -9,7 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -32,5 +35,28 @@ public class Customer {
     private Status status; //Backend operation
     private LocalDateTime createdAt;
     private LocalDateTime lastLoggedInAt;
+
+    /*@OneToOne(cascade = CascadeType.ALL)
+    private Address address;*/
+
+
+    /*@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Address address;*/
+
+
+    /*@OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    private List<Address> addresses;*/
+
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "customer_addresses",
+        joinColumns = @JoinColumn(name = "customer_id"),
+        inverseJoinColumns = @JoinColumn(name = "address_id")
+    )
+    private List<Address> addresses;
+
+
 
 }

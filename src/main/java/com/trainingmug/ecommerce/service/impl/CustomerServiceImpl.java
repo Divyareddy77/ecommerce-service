@@ -4,11 +4,13 @@ import com.trainingmug.ecommerce.dto.request.LoginRequestDto;
 import com.trainingmug.ecommerce.dto.request.SignUpRequestDto;
 import com.trainingmug.ecommerce.dto.request.UpdateCustomerRequestDto;
 import com.trainingmug.ecommerce.dto.response.CustomerResponseDto;
+import com.trainingmug.ecommerce.entity.Address;
 import com.trainingmug.ecommerce.enums.Gender;
 import com.trainingmug.ecommerce.enums.Status;
 import com.trainingmug.ecommerce.exception.CustomerExistsException;
 import com.trainingmug.ecommerce.exception.CustomerNotFoundException;
 import com.trainingmug.ecommerce.entity.Customer;
+import com.trainingmug.ecommerce.repository.AddressRepository;
 import com.trainingmug.ecommerce.repository.CustomerRepository;
 import com.trainingmug.ecommerce.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final ModelMapper modelMapper;
+    private final AddressRepository addressRepository;
     @Override
     public CustomerResponseDto register(SignUpRequestDto signUpRequestDto) throws CustomerExistsException {
         customerRepository.findByEmail(signUpRequestDto.getEmail()).ifPresent(c -> {
@@ -39,6 +42,27 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setStatus(Status.ACTIVE);
         customer.setCreatedAt(LocalDateTime.now());
         customer.setLastLoggedInAt(LocalDateTime.now());
+        //customer.getAddress().setCustomer(customer);
+        //customer.getAddresses().forEach(address -> address.setCustomer(customer));
+        List<Address> addresses = customer.getAddresses()
+                .stream()
+                .map(address -> {
+                    if(address.getId() != null){
+                        return addressRepository.findById(address.getId()).orElseThrow();
+                    }
+                    return address;
+                }).toList();
+        customer.setAddresses(addresses);
+
+
+
+
+
+
+
+
+
+
         /*Customer savedCustomer = customerRepository.save(customer);
         return CustomerResponseDto.builder()
                 .id(savedCustomer.getId())
