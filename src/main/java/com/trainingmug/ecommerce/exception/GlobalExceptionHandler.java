@@ -1,5 +1,6 @@
 package com.trainingmug.ecommerce.exception;
 
+import com.trainingmug.ecommerce.dto.response.ApiResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<String> handleCustomerNotFoundException(CustomerNotFoundException e){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    public ResponseEntity<ApiResponseDto<String>> handleCustomerNotFoundException(CustomerNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Ap
+        );
     }
     @ExceptionHandler(CustomerExistsException.class)
     public ResponseEntity<String> handleCustomerExistsException(CustomerExistsException e){

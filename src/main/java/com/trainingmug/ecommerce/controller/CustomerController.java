@@ -3,6 +3,7 @@ package com.trainingmug.ecommerce.controller;
 import com.trainingmug.ecommerce.dto.request.LoginRequestDto;
 import com.trainingmug.ecommerce.dto.request.SignUpRequestDto;
 import com.trainingmug.ecommerce.dto.request.UpdateCustomerRequestDto;
+import com.trainingmug.ecommerce.dto.response.ApiResponseDto;
 import com.trainingmug.ecommerce.dto.response.CustomerResponseDto;
 import com.trainingmug.ecommerce.entity.Customer;
 import com.trainingmug.ecommerce.service.CustomerService;
@@ -24,12 +25,19 @@ public class CustomerController {
     //CRUD operations (End Points)
     //Save ( POST -> body)
     @PostMapping("/signup")
-    public ResponseEntity<CustomerResponseDto> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
         //1. Throw CustomerExistsException if customer exists
         //2. save customer
         //3. return saved customer
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(customerService.register(signUpRequestDto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    ApiResponseDto.<CustomerResponseDto>builder()
+                            .success(true)
+                            .message("signup successful")
+                            .code(HttpStatus.CREATED.value())
+                            .data(customerService.register(signUpRequestDto))
+                            .build()
+            );
 
         //ResponseEntity Types
         /*
@@ -40,30 +48,57 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponseDto>> getAll(){
+    public ResponseEntity<ApiResponseDto<List<CustomerResponseDto>>> getAll(){
         //GET -> 200 Ok
         //ResponseEntity.status(HttpStatus.OK).body(customerService.getAll());
-        return ResponseEntity.ok(customerService.getAll());
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<CustomerResponseDto>>builder()
+                        .success(true)
+                        .message("customers fetched successfully")
+                        .code(HttpStatus.OK.value())
+                        .data(customerService.getAll())
+                        .build()
+        );
     }
     //http://localhost:8080/api/customers/1
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getById(@PathVariable int id){
+    public ResponseEntity<ApiResponseDto<Customer>> getById(@PathVariable int id){
 
-            return ResponseEntity.ok(customerService.getById(id));
+            return ResponseEntity.ok(
+                    ApiResponseDto.<Customer>builder()
+                            .success(true)
+                            .message("customer fetched successfully")
+                            .code(HttpStatus.OK.value())
+                            .data(customerService.getById(id))
+                            .build()
+            );
 
     }
     @PutMapping
-    public ResponseEntity<UpdateCustomerRequestDto> update(@RequestBody UpdateCustomerRequestDto updateCustomerRequestDto){
+    public ResponseEntity<ApiResponseDto<UpdateCustomerRequestDto>> update(@RequestBody UpdateCustomerRequestDto updateCustomerRequestDto){
 
-            return ResponseEntity.ok(customerService.update(updateCustomerRequestDto));
+            return ResponseEntity.ok(
+                    ApiResponseDto.<UpdateCustomerRequestDto>builder()
+                            .success(true)
+                            .message("customer updated successfully")
+                            .code(HttpStatus.OK.value())
+                            .data(customerService.update(updateCustomerRequestDto))
+                            .build()
+            );
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
+    public ResponseEntity<ApiResponseDto<Void>> delete(@PathVariable int id){
 
             customerService.delete(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(
+                    ApiResponseDto.<Void>builder()
+                            .success(true)
+                            .message("customer deleted successfully")
+                            .code(HttpStatus.OK.value())
+                            .build()
+            );
 
     }
 
@@ -73,20 +108,48 @@ public class CustomerController {
     public ResponseEntity<?> deleteById(@RequestParam int id){}
      */
     @PostMapping("/login")
-    public ResponseEntity<CustomerResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
-        return ResponseEntity.ok(customerService.login(loginRequestDto));
+    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity.ok(
+                ApiResponseDto.<CustomerResponseDto>builder()
+                        .success(true)
+                        .message("Login successful")
+                        .code(HttpStatus.OK.value())
+                        .data(customerService.login(loginRequestDto))
+                        .build()
+        );
     }
     @GetMapping("/created-between/{start}/{end}")
-    public ResponseEntity<List<CustomerResponseDto>> getCustomersCreatedBetween(@PathVariable LocalDateTime start,@PathVariable LocalDateTime end){
-        return ResponseEntity.ok(customerService.getsCustomersCreatedBetween(start,end));
+    public ResponseEntity<ApiResponseDto<List<CustomerResponseDto>>> getCustomersCreatedBetween(@PathVariable LocalDateTime start,@PathVariable LocalDateTime end){
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<CustomerResponseDto>>builder()
+                        .success(true)
+                        .message("Customers fetched successfully")
+                        .code(HttpStatus.OK.value())
+                        .data(customerService.getsCustomersCreatedBetween(start,end))
+                        .build()
+        );
     }
     @GetMapping("/name/{name}")
-    public ResponseEntity<List<CustomerResponseDto>> getCustomersNameLike(@PathVariable String name){
-        return ResponseEntity.ok(customerService.getCustomersNameLike(name));
+    public ResponseEntity<ApiResponseDto<List<CustomerResponseDto>>> getCustomersNameLike(@PathVariable String name){
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<CustomerResponseDto>>builder()
+                        .success(true)
+                        .message("Customers fetched successfully")
+                        .code(HttpStatus.OK.value())
+                        .data(customerService.getCustomersNameLike(name))
+                        .build()
+        );
     }
     @GetMapping("/{name}/sorted")
-    public ResponseEntity<List<CustomerResponseDto>> getByNameOrderByCreatedAtDesc(@PathVariable String name){
-        return ResponseEntity.ok(customerService.getByNameOrderByCreatedAtDesc(name));
+    public ResponseEntity<ApiResponseDto<List<CustomerResponseDto>>> getByNameOrderByCreatedAtDesc(@PathVariable String name){
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<CustomerResponseDto>>builder()
+                        .success(true)
+                        .message("Customers fetched successfully")
+                        .code(HttpStatus.OK.value())
+                        .data(customerService.getByNameOrderByCreatedAtDesc(name))
+                        .build()
+        );
     }
 
 
