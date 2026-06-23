@@ -7,6 +7,7 @@ import com.trainingmug.ecommerce.dto.response.ApiResponseDto;
 import com.trainingmug.ecommerce.dto.response.CustomerResponseDto;
 import com.trainingmug.ecommerce.entity.Customer;
 import com.trainingmug.ecommerce.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class CustomerController {
     //CRUD operations (End Points)
     //Save ( POST -> body)
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> signup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         //1. Throw CustomerExistsException if customer exists
         //2. save customer
         //3. return saved customer
@@ -108,7 +109,7 @@ public class CustomerController {
     public ResponseEntity<?> deleteById(@RequestParam int id){}
      */
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<ApiResponseDto<CustomerResponseDto>> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
         return ResponseEntity.ok(
                 ApiResponseDto.<CustomerResponseDto>builder()
                         .success(true)
