@@ -2,6 +2,7 @@ package com.trainingmug.ecommerce.controller;
 
 import com.trainingmug.ecommerce.dto.request.ProductRequestDto;
 import com.trainingmug.ecommerce.dto.request.UpdateProductRequestDto;
+import com.trainingmug.ecommerce.dto.response.ApiResponseDto;
 import com.trainingmug.ecommerce.dto.response.ProductResponseDto;
 import com.trainingmug.ecommerce.entity.Product;
 import com.trainingmug.ecommerce.service.ProductService;
@@ -21,43 +22,81 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> save(@RequestBody ProductRequestDto productRequestDto){
+    public ResponseEntity<ApiResponseDto<ProductResponseDto>> save(@RequestBody ProductRequestDto productRequestDto){
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productRequestDto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    ApiResponseDto.<ProductResponseDto>builder()
+                            .success(true)
+                            .message("Product saved successfully")
+                            .code(HttpStatus.CREATED.value())
+                            .data(productService.save(productRequestDto))
+                            .build()
+            );
 
+    }
+    @GetMapping()
+    public ResponseEntity<ApiResponseDto<List<ProductResponseDto>>> getAllProducts(){
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<ProductResponseDto>>builder()
+                        .success(true)
+                        .message("Products fetched successfully")
+                        .code(HttpStatus.OK.value())
+                        .data(productService.getAll())
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id){
+    public ResponseEntity<ApiResponseDto<ProductResponseDto>> getProductById(@PathVariable int id){
 
-            return ResponseEntity.ok(productService.getProductById(id));
+            return ResponseEntity.ok(
+                    ApiResponseDto.<ProductResponseDto>builder()
+                            .success(true)
+                            .message("Product fetched successfully")
+                            .code(HttpStatus.OK.value())
+                            .data(productService.getProductById(id))
+                            .build()
+            );
 
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> update(@PathVariable int id, @RequestBody UpdateProductRequestDto updateProductRequestDto){
+    public ResponseEntity<ApiResponseDto<ProductResponseDto>> update(@PathVariable int id, @RequestBody UpdateProductRequestDto updateProductRequestDto){
 
             ProductResponseDto updatedProduct = productService.update(updateProductRequestDto);
-            return ResponseEntity.ok(updatedProduct);
+            return ResponseEntity.ok(
+                    ApiResponseDto.<ProductResponseDto>builder()
+                            .success(true)
+                            .message("Product updated successfully")
+                            .code(HttpStatus.OK.value())
+                            .data(productService.update(updateProductRequestDto))
+                            .build()
+            );
 
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
+    public ResponseEntity<ApiResponseDto<Void>> delete(@PathVariable int id){
 
             productService.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(
+                    ApiResponseDto.<Void>builder()
+                            .success(true)
+                            .message("Product deleted successfully")
+                            .code(HttpStatus.OK.value())
+                            .build()
+            );
 
     }
-    @GetMapping("/available")
-    public ResponseEntity<List<Product>> getAvailableProducts(){
-        return ResponseEntity.ok(productService.getProductsByAvailability(true));
-    }
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category){
-        return ResponseEntity.ok(productService.getProductByCategory(category));
-    }
-    @GetMapping("/categories")
-    public ResponseEntity<List<String >> getAllCategories(){
-        return ResponseEntity.ok(productService.getAllCategories());
+   /* @GetMapping("/available")
+        public ResponseEntity<List<Product>> getAvailableProducts(){
+            return ResponseEntity.ok(productService.getProductsByAvailability(true));
+        }
+        @GetMapping("/category/{category}")
+        public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category){
+            return ResponseEntity.ok(productService.getProductByCategory(category));
+        }
+        @GetMapping("/categories")
+        public ResponseEntity<List<String >> getAllCategories(){
+            return ResponseEntity.ok(productService.getAllCategories());
     }
     @GetMapping("/price/{price}")
     public ResponseEntity<List<Product>> getProductsWithPriceGreaterThan(@PathVariable int price){
@@ -87,9 +126,9 @@ public class ProductController {
     public ResponseEntity<List<Product>> getProductsByPriceInAscending(){
         return ResponseEntity.ok(productService.getProductsByPriceInAscending());
     }
-    /*
+    *//*
 
-     */
+     *//*
     @GetMapping("/name-descending")
     public ResponseEntity<List<Product>> getProductsByNAmeInDescending(){
         return ResponseEntity.ok(productService.getProductsByNAmeInDescending());
@@ -146,5 +185,5 @@ public class ProductController {
     public ResponseEntity<Boolean> areALlProductsAvailable(){
         return ResponseEntity.ok(productService.areALlProductsAvailable());
     }
-
+*/
 }

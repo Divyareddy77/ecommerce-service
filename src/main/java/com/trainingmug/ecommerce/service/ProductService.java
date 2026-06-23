@@ -15,6 +15,7 @@ public interface ProductService {
     ProductResponseDto save(ProductRequestDto productRequestDto) throws ProductNotFoundException;
     ProductResponseDto update(UpdateProductRequestDto updateProductRequestDto) throws ProductExistsException;
     void deleteById(int id) throws ProductNotFoundException;
+    List<ProductResponseDto> getAll();
     List<Product> getProductsByAvailability(boolean isAvailable);
     List<Product> getProductByCategory(String category);
     ProductResponseDto getProductById(int id) throws ProductNotFoundException;

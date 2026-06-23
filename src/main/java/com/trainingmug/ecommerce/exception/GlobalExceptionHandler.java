@@ -12,23 +12,54 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ApiResponseDto<String>> handleCustomerNotFoundException(CustomerNotFoundException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                Ap
+                ApiResponseDto.<String>builder()
+                        .success(false)
+                        .message(e.getMessage())
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .data(e.getMessage())
+                        .build()
         );
     }
     @ExceptionHandler(CustomerExistsException.class)
-    public ResponseEntity<String> handleCustomerExistsException(CustomerExistsException e){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    public ResponseEntity<ApiResponseDto<String>> handleCustomerExistsException(CustomerExistsException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponseDto.<String>builder()
+                        .success(false)
+                        .code(HttpStatus.CONFLICT.value())
+                        .data(e.getMessage())
+                        .build()
+        );
     }
     @ExceptionHandler(ProductExistsException.class)
-    public ResponseEntity<String> handleProductExistsException(ProductExistsException e){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    public ResponseEntity<ApiResponseDto<String>> handleProductExistsException(ProductExistsException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponseDto.<String>builder()
+                        .success(false)
+                        .code(HttpStatus.CONFLICT.value())
+                        .data(e.getMessage())
+                        .build()
+        );
     }
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException e){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    public ResponseEntity<ApiResponseDto<String>> handleProductNotFoundException(ProductNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiResponseDto.<String>builder()
+                        .success(false)
+                        .message(e.getMessage())
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .data(e.getMessage())
+                        .build()
+        );
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllExceptions(Exception e){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    public ResponseEntity<ApiResponseDto<String>> handleAllExceptions(Exception e){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ApiResponseDto.<String>builder()
+                        .success(false)
+                        .message(e.getMessage())
+                        .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .data(e.getMessage())
+                        .build()
+        );
     }
 }

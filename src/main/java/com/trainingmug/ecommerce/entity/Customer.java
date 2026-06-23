@@ -49,13 +49,13 @@ public class Customer {
 
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    /*@ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "customer_addresses",
         joinColumns = @JoinColumn(name = "customer_id"),
         inverseJoinColumns = @JoinColumn(name = "address_id")
     )
-    private List<Address> addresses;
+    private List<Address> addresses;*/
 
 
 

@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setLastLoggedInAt(LocalDateTime.now());
         //customer.getAddress().setCustomer(customer);
         //customer.getAddresses().forEach(address -> address.setCustomer(customer));
-        List<Address> addresses = customer.getAddresses()
+        /*List<Address> addresses = customer.getAddresses()
                 .stream()
                 .map(address -> {
                     if(address.getId() != null){
@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
                     }
                     return address;
                 }).toList();
-        customer.setAddresses(addresses);
+        customer.setAddresses(addresses);*/
 
 
 

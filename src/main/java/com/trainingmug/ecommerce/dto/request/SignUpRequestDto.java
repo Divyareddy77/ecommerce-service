@@ -17,5 +17,5 @@ public class SignUpRequestDto {
     private String phone;
     private Gender gender;
     //private Address address;
-    private List<Address> addresses;
+    //private List<Address> addresses;
 }

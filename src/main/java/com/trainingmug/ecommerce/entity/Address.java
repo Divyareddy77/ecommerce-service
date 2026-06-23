@@ -26,6 +26,6 @@ public class Address {
     private Customer customer;*/
 
 
-    @ManyToMany(mappedBy = "addresses")
-    private List<Customer> customers;
+    /*@ManyToMany(mappedBy = "addresses")
+    private List<Customer> customers;*/
 }

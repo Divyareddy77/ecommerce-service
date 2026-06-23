@@ -2,6 +2,7 @@ package com.trainingmug.ecommerce.service.impl;
 
 import com.trainingmug.ecommerce.dto.request.ProductRequestDto;
 import com.trainingmug.ecommerce.dto.request.UpdateProductRequestDto;
+import com.trainingmug.ecommerce.dto.response.CustomerResponseDto;
 import com.trainingmug.ecommerce.dto.response.ProductResponseDto;
 import com.trainingmug.ecommerce.exception.ProductExistsException;
 import com.trainingmug.ecommerce.exception.ProductNotFoundException;
@@ -53,6 +54,13 @@ public class ProductServiceImpl implements ProductService {
     public void deleteById(int id) throws ProductNotFoundException {
         productRepository.deleteById(id);
     }
+
+    @Override
+    public List<ProductResponseDto> getAll() {
+        return productRepository.findAll().stream().map(product -> modelMapper.map(product, ProductResponseDto.class)).toList();
+
+    }
+
     @Override
     public List<Product> getProductsByAvailability(boolean isAvailable) {
         return productRepository.findAll().stream().filter(p->p.isAvailable()==isAvailable).toList();
